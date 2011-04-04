@@ -8,4 +8,5 @@ map <leader>2 <esc>G$a(begin!)<cr><esc>
 map <leader>3 <esc>G$a(advance!)<cr><esc>
 " Open URL under cursor
 map <leader>0 <esc>viwyG$a(browse "<esc>pa")<cr><esc>
-
+" eval form. Cursor must be on open or close paren.
+map <leader>9 <esc>"ay%:let @a=substitute(@a,"\|","","g")<cr>G$"ap$a<cr><esc>

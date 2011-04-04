@@ -4,36 +4,6 @@
 
 (def browse clojure.java.browse/browse-url)
 
-(def tldr-slide1
-"TL;DR - Just give me a REPL!
-----------------------------
-
-$ java -version
-java version \"1.6.0_24\"
-Java(TM) SE Runtime Environment (build 1.6.0_24-b07-334-10M3326)
-Java HotSpot(TM) 64-Bit Server VM (build 19.1-b02-334, mixed mode)
-$ wget -q --no-check-certificate \\
-    http://github.com/downloads/clojure/clojure/clojure-1.2.0.zip
-$ unzip -q clojure-1.2.0.zip 
-$ java -jar clojure-1.2.0/clojure.jar 
-Clojure 1.2.0
-user=> (println \"Yep\")
-Yep
-nil
-user=> ^C
-$ echo '(ns hello) (println \"Hello\")' > hello.clj
-$ java -jar clojure-1.2.0/clojure.jar hello.clj 
-Hello")
-
-(def tldr-slide2
-"TL;DR - Just tell me how to run a script!
------------------------------------------
-
-$ echo '(ns hello) (println \"Fine, gosh!\")' > hello.clj
-$ java -jar clojure-1.2.0/clojure.jar hello.clj 
-Fine, gosh!
-")
-
 (def expressions-slides
   (str "Expression Evaluation
 ---------------------
@@ -184,9 +154,9 @@ e.g.
 
 * Consistent set of operations on all collections:
 
-  (conj [1 2 3] :four)      --> [1 2 3 :four]
+  (conj [1 2 3]     :four)  --> [1 2 3 :four]
   (conj {:x 1 :y 2} [:z 3]) --> {:z 3, :x 1, :y 2}
-  (conj #{ 1 2 3 } :four)   --> #{1 2 3 :four}
+  (conj #{ 1 2 3 }  :four)  --> #{1 2 3 :four}
 
   Also, (disj), (assoc), (dissoc), etc. All have appropriate implementation
   for each datastructure.")
@@ -212,9 +182,9 @@ e.g.
 
 * All collections (and more) implement ISeq interface:
 
-  (first [1 2 3])   -->   1
-  (rest [1 2 3])    -->   (2 3)
-  (cons 0 [1 2 3])  -->   (0 1 2 3)
+  (first   [1 2 3])   -->   1
+  (rest    [1 2 3])   -->   (2 3)
+  (cons  0 [1 2 3])   -->   (0 1 2 3)
 
 * Rich library of sequence functions 
   * map, reduce, filter, partition, etc
@@ -223,9 +193,6 @@ e.g.
 * A sequence can be _lazy_, i.e. realize sequence as needed.
   * Reduce memory usage
   * Supports infinite sequences")
-
-(def java-interop-slide 
-)
 
 (def slides [
              
@@ -320,7 +287,75 @@ collections-slide2
 seqs-slide
              
 ;---------------------------------------------------------------------------------
-            
+             
+"Binding Forms
+-------------
+
+* Use (let) and friends to bind expressions to /immutable/ local vars
+
+        (let [name1 value1  \\
+              name2 value2  |-- This is a \"binding form\"
+              ...]          /
+          ...)
+
+  e.g.
+
+        (defn slope [a b]
+          (let [dx (- (:x a) (:x b))
+                dy (- (:y a) (:y b))]
+            (/ dy dx)))
+
+* Bindings established in order. Earlier bindings may be used later.
+
+* Binding forms are used in many macros, (with-open), (loop), (for), etc."
+
+;---------------------------------------------------------------------------------
+
+"Destructuring Forms
+-------------------
+
+* Like Ruby or Python \"multiple assignment\", but more powerful.
+
+* Used in both binding forms and argument lists.
+
+* Destructure a vector (or any seq):
+ 
+      This vector is like a template
+      that receives vector values
+               |
+               v
+    (let [[a b c & more] [9 8 7 6 5 4 3]]
+      (println \"a =\" a \", b =\" b \", c =\" c \", more =\" more))
+
+    -->  a = 9 , b = 8 , c = 7 , more = (6 5 4 3)"
+
+;---------------------------------------------------------------------------------
+
+"Destructuring
+-------------
+
+* Destructure a map (with arbitrary nesting!):
+
+           Nested
+           vector    +- This 'backward' map is like another template
+             |       |
+             v       v
+    (let [{[x y] :center radius :radius}  {:center [100 200], :radius 2.0}]
+      (println \"x =\" x \", y =\" y \", radius =\" radius))
+
+    -->   x = 100 , y =  200 , radius = 2.0
+
+* Use map destructuring sugar to type less:
+
+            { name :name address :address phone :phone email :email }
+
+  becomes:
+
+            { :keys [name address phone] }
+
+  / See http://blog.jayfields.com/2010/07/clojure-destructuring.html /"
+
+;---------------------------------------------------------------------------------
 
 "Java Interop
 ------------
@@ -377,6 +412,8 @@ seqs-slide
 "(def surface {:scratched? :barely})
 -----------------------------------
 
+* Namespaces
+
 * Concurrency and state management
 
 * Protocol, Multi-methods, and Ad-hoc Hierarchies
@@ -400,8 +437,38 @@ seqs-slide
 
 * \"The Joy of Clojure\", Fogus & Houser (http://joyofclojure.com)"
 
-tldr-slide1
-tldr-slide2
+;---------------------------------------------------------------------------------
+
+"TL;DR - Just give me a REPL!
+----------------------------
+
+$ java -version
+java version \"1.6.0_24\"
+Java(TM) SE Runtime Environment (build 1.6.0_24-b07-334-10M3326)
+Java HotSpot(TM) 64-Bit Server VM (build 19.1-b02-334, mixed mode)
+$ wget -q --no-check-certificate \\
+    http://github.com/downloads/clojure/clojure/clojure-1.2.0.zip
+$ unzip -q clojure-1.2.0.zip 
+$ java -jar clojure-1.2.0/clojure.jar 
+Clojure 1.2.0
+user=> (println \"Yep\")
+Yep
+nil
+user=> ^C
+$ echo '(ns hello) (println \"Hello\")' > hello.clj
+$ java -jar clojure-1.2.0/clojure.jar hello.clj 
+Hello"
+
+;---------------------------------------------------------------------------------
+
+"TL;DR - Just tell me how to run a script!
+-----------------------------------------
+
+$ echo '(ns hello) (println \"Fine, gosh!\")' > hello.clj
+$ java -jar clojure-1.2.0/clojure.jar hello.clj 
+Fine, gosh!"
+
+;---------------------------------------------------------------------------------
 
 "That's it.
 ----------"
