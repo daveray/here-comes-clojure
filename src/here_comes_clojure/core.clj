@@ -1,6 +1,8 @@
 (ns here-comes-clojure.core
-  (:require [clojure.string :as cs]))
+  (:require [clojure.string :as cs]
+            [clojure.java.browse]))
 
+(def browse clojure.java.browse/browse-url)
 
 (def tldr-slide1
 "TL;DR - Just give me a REPL!
@@ -223,32 +225,38 @@ e.g.
   * Supports infinite sequences")
 
 (def java-interop-slide 
-"Java Interop
-------------")
+)
 
 (def slides [
-"            ???????????=              
-        ???????????????????           
-      ???????????????????????.        
-    +??++??????????????????????       
-                      +?????????      
-       ::      ~~~~~~.  .????????   
-   +$$$$I  ,?   ~~~~~~~~  +???????  
-  $$$$$$  ????  .~~~~~~~~. .??????: 
- $$$$$$  ??????  :~~~~~~~~  ??????? 
-$$$$$$. =???????  ~~~~~~~~:  ??????,
-$$$$$$  ????????  ~~~~~~~~~  ??????~
-$$$$$$  ??????? , .~~~~~~~~  ??????~
-$$$$$$. =?????  ?: :~~~~~~:  ??????,
-$$$$$$$  ????= =??  ~~~~~~  ??????+ 
-~$$$$$$7  ??+ .???.  ~~~~. .??????  
- ?$$$$$$I  ,  ?????   ~~  +????+    
-  $$$$$$$$.   +?????.               Here Come's Clojure
-   $$$$$$$$$?         ?:       ,    -------------------
-    I$$$$$$$$$$$$$$$$$$$$$$$$$7     
-      $$$$$$$$$$$$$$$$$$$$$$$.      CraftsmanGuild, April 5, 2011
-        7$$$$$$$$$$$$$$$$$7         Dave Ray (@darevay)
-            $$$$$$$$$$$?            "
+             
+;---------------------------------------------------------------------------------
+            
+             
+"            400000000000              
+        4000000000000000000           
+      40000000000000000000000.        
+    400000000000000000000000000       
+                      0000000000      
+     ~~~~      000000.   00000000   
+   ~~~~~.  ~~   00000000   0000000  
+  ~~~~~~  ~~~~  000000000.  0000000 
+ ~~~~~~  ~~~~~~  000000000  0000000 
+~~~~~~. ~~~~~~~~  00000000.  000000.
+~~~~~~  ~~~~~~~~  000000000  0000000
+~~~~~~  ~~~~~~~ ~  00000000  0000000
+~~~~~~. ~~~~~~  ~~ 0000000.  0000007
+~~~~~~~  ~~~~~ ~~~  000000  0000000 
+~~~~~~~~  ~~~ ~~~~~  0000.  000000  
+ ~~~~~~~~  ~  ~~~~~   00   00000    
+  ~~~~~~~~.   ~~~~~~.               Here Come's Clojure
+   ~~~~~~~~~          ''       ~    -------------------
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~     
+      ~~~~~~~~~~~~~~~~~~~~~~~.      CraftsmanGuild, April 5, 2011
+        ~~~~~~~~~~~~~~~~~~~         Dave Ray (@darevay)
+            ~~~~~~~~~~~~            "
+
+;---------------------------------------------------------------------------------
+            
 
 "What's a Clojure?
 -----------------
@@ -257,10 +265,16 @@ $$$$$$$  ????= =??  ~~~~~~  ??????+
 * Dynamic
 * Pragmatic
 * Opinionated"
+             
+;---------------------------------------------------------------------------------
+            
 
 expressions-slides
 symbol-eval-slide
 list-eval-slide
+             
+;---------------------------------------------------------------------------------
+            
 
 "Two Minor Syntactical Notes
 ---------------------------
@@ -271,6 +285,9 @@ list-eval-slide
 
 [:Also, :commas :are :whitespace,
   :ignored :by :Clojure, :and :used :for :clarity.]"
+             
+;---------------------------------------------------------------------------------
+            
 
 "Language Syntax
 ---------------
@@ -289,6 +306,9 @@ A list
         `- A symbol       `- A string
 
 * It's /homoiconic/"
+             
+;---------------------------------------------------------------------------------
+            
 
 function-slide
 function-bonus-slide
@@ -298,7 +318,87 @@ loop-recur-slide
 collections-slide1
 collections-slide2
 seqs-slide
+             
+;---------------------------------------------------------------------------------
+            
 
+"Java Interop
+------------
+
+* Create a new Java object:
+
+  (URL. \"http://google.com\")
+      ^
+      `-- Note the trailing dot on the class name
+
+* Call a method on a Java object:
+
+       method    target
+         |          |
+         v          v
+  (.toExternalForm url)
+
+* Call a static method:
+
+  (System/setProperty \"java.lib.path\" \"Why won't my DLLs load?\")
+
+* Access a static member:
+
+  (.setForeground label Color/ORANGE)"
+             
+;---------------------------------------------------------------------------------
+            
+"More Java Interop
+-----------------
+
+* Collections implement java.util.List and other interfaces as appropriate
+
+* Clojure functions implement Runnable & Callable:
+
+    (SwingUtilities/invokeLater #(.repaint panel))
+
+* (->) threading operator cleans up long method chains:
+
+              ((JTextField) event).getSource().getDocument().getLength();
+    becomes: 
+              (-> event .getSource .getDocument .getLength)
+
+    /That's 8 _fewer_ parens than the same Java code!/
+
+* (doto) helps with initializing 'bean-y' objects:
+
+    (doto (JLabel.)
+      (.setText \"HI\")
+      (.setForeground Color/ORANGE)
+      (.setIcon (ImageIcon. \"hi.png\")))"
+             
+;---------------------------------------------------------------------------------
+
+"(def surface {:scratched? :barely})
+-----------------------------------
+
+* Concurrency and state management
+
+* Protocol, Multi-methods, and Ad-hoc Hierarchies
+
+* Testing
+
+* Build tools and dev environment
+
+* Libraries"
+
+;---------------------------------------------------------------------------------
+
+"Further Reading and Resources
+-----------------------------
+
+* USE THE SOURCE! SERIOUSLY!  https://github.com/clojure/clojure 
+
+* clojure.org - Project home page
+
+* clojuredocs.org - User-annotated library documentation
+
+* \"The Joy of Clojure\", Fogus & Houser (http://joyofclojure.com)"
 
 tldr-slide1
 tldr-slide2
@@ -316,7 +416,7 @@ tldr-slide2
 
 
 (defn get-padding-size [content]
-  (let [line-count (count (cs/split content #"\n"))
+  (let [line-count (count (cs/split content #"\n" -1))
         excess     (- height (+ line-count 5))]
     [(quot excess 2)
      (quot excess 2)]))
@@ -324,7 +424,7 @@ tldr-slide2
 (defn prepare-content [content prefix]
   (cs/join "\n"
     (map #(str prefix %)
-        (cs/split content #"\n"))))
+        (cs/split content #"\n" -1))))
 
 (defn prepare-padding [n prefix]
   (prepare-content (cs/join (take n (repeat "\n"))) prefix))
@@ -332,6 +432,7 @@ tldr-slide2
 (defn print-current! []
   (let [content (first @current)
        [top bottom] (get-padding-size content)]
+    (println "\n\n\n\n\n")
     (println separator)
     (println (prepare-padding top     "|  "))
     (println (prepare-content content "|  "))
@@ -340,6 +441,8 @@ tldr-slide2
 
 (defn advance! [] 
   (do
+    (when-not @current
+      (reset! current slides))
     (println "`\n")
     (print-current!)
     (swap! current next)
