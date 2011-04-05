@@ -4,195 +4,7 @@
 
 (def browse clojure.java.browse/browse-url)
 
-(def expressions-slides
-  (str "Expression Evaluation
----------------------
 
-Most expressions evaluate to themselves
-
-  * (nil)     nil          --> " "nil" "
-  * (integer) 876          --> " 876 "
-  * (double)  8.76         --> " 8.76 "
-  * (string)  \"A String\"   --> " "\"A String\"
-  * (keyword) :x           --> " :x "
-  * (vector)  [1 2 3]      --> " [1 2 3] "
-  * (map)     {:x 1, :y 2} --> " { :x 1 :y 2 } "
-  * (set)     #{:foo :bar} --> " #{ :foo :bar }))
-
-(def symbol-eval-slide
-  (str "Symbol Evaluation
------------------
-
-... but symbols, evaluate to whatever they refer to:
-
-        user=> (def drunk { :type :mean })
-        #'user/drunk
-
-        user=> drunk
-        { :type :mean }
-
-Symbols are used to give names to things (functions, objects, etc)"))
-
-(def list-eval-slide
-  (str "List Evaluation
----------------
-
-... and list expressions are treated as function (or macro)
-    calls:
-
-          (function-name args ...)
-
-    (+ 1 2 3 4 5 6) --> " (+ 1 2 3 4 5 6) "
-
-    (reduce + (range 0 7)) --> " (reduce + (range 0 7)) "
-    ^         ^
-    |         `- nested list eval'd first
-    |
-    `- outer list eval'd last
-
-Lists are where all the parens live."))
-
-(def function-slide
-  (str "Functions
----------
-
-Functions, not objects, are the bread and butter of Clojure
-
-Define functions with the (fn) function:
-
-  (def retort (fn [s] (str \" ... that's what she said.\")))
-
-    user=> (retort \"Java's so imperative\")
-    \" ... that's what she said.\"
-
-or better yet, the (defn) macro:
-
-  (defn retort [s] (str \" ... that's what she said.\"))
-          ^     ^
-   name --'     `-- vector of arguments"))
-
-(def function-bonus-slide
-  (str "Functions (bonus slide)
------------------------
-
-Functions can have doc-strings and multiple arity:
-
-(defn add
-  \"A crappier version of +. Don't do this.\"
-  ([a b] (+ a b))
-  ([a b c] (+ a (add b c))))
-
-Function literal (lambda) syntax:
-
-      % refers to first arg, use %N for more
-                  |
-                  v
-  user=> (map #(* % 2) (range 0 10))
-  (0 2 4 6 8 10 12 14 16 18)"))
-
-(def flow-control-slide
-  (str "Flow Control
-------------
-
-      (if test 
-        then    ; evaluated if test is truey
-        else)   ; evaluated if test is falsey
-
-e.g.
-
-      (defn pluralize [n s] 
-        (if (= n 1) 
-          s 
-          (str s \"s\")))
-
-### Only false and nil are falsey. EVERYTHING else it truey ###"))
-
-(def loop-recur-slide
-  (str "loop/recur
-----------
-
-* Basis for iteration
-* Rarely necessary. Use map, reduce and friends instead.
- 
-  (defn sum [n]
-    \"Sum numbers from 1 to n inclusive.\"
-    (loop [current 1 acc 0]
-      (if (> current n)
-        acc
-        (recur (inc current) (+ current acc)))))
-
-* Solution for lack of tail-call optimization, 
-     recursion on JVM"))
-
-(def collections-slide1
-"Collections
------------
-
-* Vector
-
-  [2 4 6 8 10]    or     (vector 2 4 6 8 10)
-
-* Map
-
-      { :title \"Breakfast of Champions\" :author  \"Vonnegut, Kurt\" }
-  or
-      (hash-map :title \"Breakfast of Champions\" :author  \"Vonnegut, Kurt\")
-
-* Set
-
-      #{ \"John\", \"Paul\", \"George\", \"Ringo\" }
-  or
-      (hash-set \"John\", \"Paul\", \"George\", \"Ringo\")")
-
-(def collections-slide2
-"More Collections
-----------------
-
-* Also, List, but Vector is generally preferred, except in macros
-
-  '(1 2 3)  or  (list 1 2 3)
-
-* Consistent set of operations on all collections:
-
-  (conj [1 2 3]     :four)  --> [1 2 3 :four]
-  (conj {:x 1 :y 2} [:z 3]) --> {:z 3, :x 1, :y 2}
-  (conj #{ 1 2 3 }  :four)  --> #{1 2 3 :four}
-
-  Also, (disj), (assoc), (dissoc), etc. All have appropriate implementation
-  for each datastructure.")
-
-(def persistence-slide
-"Persistence
------------
-
-* Clojure defaults to immutability
-
-  user=> (def point {:x 1 :y 2})
-  #'user/point
-  user=> (assoc point :z 3)
-  {:z 3, :x 1, :y 2}              ; returns a new map
-  user=> point
-  {:x 1, :y 2}                    ; point is unchanged!
-
-* Persistant data structures to efficiently share structure")
-
-(def seqs-slide
-"Seq
----
-
-* All collections (and more) implement ISeq interface:
-
-  (first   [1 2 3])   -->   1
-  (rest    [1 2 3])   -->   (2 3)
-  (cons  0 [1 2 3])   -->   (0 1 2 3)
-
-* Rich library of sequence functions 
-  * map, reduce, filter, partition, etc
-  * All work consistently across ISeq implementors
-
-* A sequence can be _lazy_, i.e. realize sequence as needed.
-  * Reduce memory usage
-  * Supports infinite sequences")
 
 (def slides [
              
@@ -229,16 +41,60 @@ e.g.
 -----------------
 
 * A Lisp variant, implemented on the JVM
-* Dynamic
+* Dynamic (yet compiled)
 * Pragmatic
 * Opinionated"
              
 ;---------------------------------------------------------------------------------
             
+(str "Expression Evaluation
+---------------------
 
-expressions-slides
-symbol-eval-slide
-list-eval-slide
+Most expressions evaluate to themselves ...
+
+  * (nil)     nil          --> " "nil" "
+  * (integer) 876          --> " 876 "
+  * (double)  8.76         --> " 8.76 "
+  * (string)  \"A String\"   --> " "\"A String\"
+  * (keyword) :x           --> " :x "
+  * (vector)  [1 2 3]      --> " [1 2 3] "
+  * (map)     {:x 1, :y 2} --> " { :x 1 :y 2 } "
+  * (set)     #{:foo :bar} --> " #{ :foo :bar })            
+
+;---------------------------------------------------------------------------------
+ 
+"Symbol Evaluation
+-----------------
+
+... but symbols evaluate (they are /resolved/) to whatever they 
+    refer to:
+
+        user=> (def drunk { :type :mean })
+        #'user/drunk
+
+        user=> drunk
+        { :type :mean }
+
+Symbols are used to give names to things (functions, objects, etc)"
+             
+;---------------------------------------------------------------------------------
+
+(str "List Evaluation
+---------------
+
+... and list expressions are treated as function (or macro) calls:
+
+          (function-name args ...)
+
+    (+ 1 2 3 4 5 6) --> " (+ 1 2 3 4 5 6) "
+
+    (reduce + (range 0 7)) --> " (reduce + (range 0 7)) "
+    ^         ^
+    |         `- nested list eval'd first
+    |
+    `- outer list eval'd last
+
+Lists are where all the parens live.")           
              
 ;---------------------------------------------------------------------------------
             
@@ -272,20 +128,176 @@ A list
         |                 |
         `- A symbol       `- A string
 
-* It's /homoiconic/"
+* It's /homoiconic/ (http://en.wikipedia.org/wiki/Homoiconicity)
+
+* Code as data  (http://clojure.org/reader)"
+
+             
+;---------------------------------------------------------------------------------
+            
+"Functions
+---------
+
+Functions, not objects, are the bread and butter of Clojure
+
+Define functions with the (fn) special form:
+
+  (def retort (fn [s] (str \" ... that's what she said.\")))
+
+    user=> (retort \"Java's so imperative\")
+    \" ... that's what she said.\"
+
+or better yet, the (defn) macro:
+
+  (defn retort [s] (str \" ... that's what she said.\"))
+          ^     ^
+   name --'     `-- vector of arguments"
+ 
+;---------------------------------------------------------------------------------
+            
+"Functions (bonus slide)
+-----------------------
+
+Functions can have doc-strings and multiple arity:
+
+(defn add
+  \"A crappier version of +. Don't do this.\"
+  ([a b]   (+ a b))
+  ([a b c] (+ a (add b c))))
+
+Function literal (lambda) syntax:
+
+      % refers to first arg, use %N for more
+                  |
+                  v
+  user=> (map #(* % 2) (range 0 10))
+  (0 2 4 6 8 10 12 14 16 18)"
+
+;---------------------------------------------------------------------------------
+            
+"Truey / Falsey and the (if) form
+---------------------------------
+
+### Only false and nil are falsey. EVERYTHING else it truey ###
+
+      (if test 
+        then    ; evaluated if test is truey
+        else)   ; evaluated if test is falsey
+
+e.g.
+
+      (defn pluralize [n s] 
+        (if (= n 1) 
+          s 
+          (str s \"s\")))
+"
+
+;---------------------------------------------------------------------------------
+            
+"loop/recur
+----------
+
+* Basis for iteration
+
+* Less necessary than you think. 
+ 
+        (defn sum [n]
+          \"Sum numbers from 1 to n inclusive.\"
+          (loop [current 1 acc 0]
+            (if (> current n)
+              acc
+              (recur (inc current) (+ current acc)))))
+  
+  Use map, reduce and friends instead:
+
+        (defn sum [n] (reduce + (range 1 (inc n))))
+
+* Solution for lack of tail-call optimization, 
+     recursion on JVM"
              
 ;---------------------------------------------------------------------------------
             
 
-function-slide
-function-bonus-slide
-flow-control-slide
-loop-recur-slide
+"Collections
+-----------
 
-collections-slide1
-collections-slide2
-seqs-slide
+* Vector
+
+  [2 4 6 8 10]    or     (vector 2 4 6 8 10)
+
+* Map
+
+      { :title \"Breakfast of Champions\" :author  \"Vonnegut, Kurt\" }
+  or
+      (hash-map :title \"Breakfast of Champions\" :author  \"Vonnegut, Kurt\")
+
+* Set
+
+      #{ \"John\", \"Paul\", \"George\", \"Ringo\" }
+  or
+      (hash-set \"John\", \"Paul\", \"George\", \"Ringo\")
+
+* /Vectors, Maps, and Sets instances are also functions/"
              
+;---------------------------------------------------------------------------------
+            
+"More Collections
+----------------
+
+* Also, List, but Vector is generally preferred, except in macros
+
+  '(1 2 3)  or  (list 1 2 3)
+
+* Consistent set of operations on all collections:
+
+  (conj [1 2 3]     :four)  --> [1 2 3 :four]
+  (conj {:x 1 :y 2} [:z 3]) --> {:z 3, :x 1, :y 2}
+  (conj #{ 1 2 3 }  :four)  --> #{1 2 3 :four}
+
+  Also, (disj), (assoc), (dissoc), etc. All have appropriate implementation
+  for each datastructure.
+
+* See also http://clojure.org/data_structures"
+             
+;---------------------------------------------------------------------------------
+
+"Persistence
+-----------
+
+* Clojure defaults to immutability
+
+  user=> (def point {:x 1 :y 2})
+  #'user/point
+  user=> (assoc point :z 3)
+  {:z 3, :x 1, :y 2}              ; returns a new map
+  user=> point
+  {:x 1, :y 2}                    ; point is unchanged!
+
+* Persistent data structures to efficiently share structure
+
+http://www.infoq.com/presentations/Value-Identity-State-Rich-Hickey"
+
+;---------------------------------------------------------------------------------
+            
+"Seq
+---
+
+* All collections (and more) implement ISeq interface:
+
+  (first   [1 2 3])   -->   1
+  (rest    [1 2 3])   -->   (2 3)
+  (cons  0 [1 2 3])   -->   (0 1 2 3)
+
+* Rich library of sequence functions 
+  * map, reduce, filter, partition, etc
+  * All work consistently across ISeq implementors
+
+* A sequence can be _lazy_, i.e. realize sequence as needed.
+  * Reduce memory usage
+  * Supports infinite sequences
+
+http://clojure.org/sequences"
+
 ;---------------------------------------------------------------------------------
              
 "Binding Forms
@@ -337,7 +349,7 @@ seqs-slide
 * Destructure a map (with arbitrary nesting!):
 
            Nested
-           vector    +- This 'backward' map is like another template
+           vector    +- This 'backward' map is also like a template
              |       |
              v       v
     (let [{[x y] :center radius :radius}  {:center [100 200], :radius 2.0}]
@@ -360,26 +372,24 @@ seqs-slide
 "Java Interop
 ------------
 
-* Create a new Java object:
+* Create a new Java object:   (URL. \"http://google.com\")
+                                  ^
+                                  `-- Note the trailing dot on the class name
 
-  (URL. \"http://google.com\")
-      ^
-      `-- Note the trailing dot on the class name
-
-* Call a method on a Java object:
-
-       method    target
-         |          |
-         v          v
-  (.toExternalForm url)
+* Call a method on a Java object:           method    target
+                                              |          |
+                                              v          v
+                                        (.toExternalForm url)
 
 * Call a static method:
 
-  (System/setProperty \"java.lib.path\" \"Why won't my DLLs load?\")
+  (System/setProperty \"java.library.path\" \"Why won't my DLLs load?\")
 
 * Access a static member:
 
-  (.setForeground label Color/ORANGE)"
+  (.setForeground label Color/ORANGE)
+
+/ http://clojure.org/java_interop /"
              
 ;---------------------------------------------------------------------------------
             
@@ -403,9 +413,9 @@ seqs-slide
 * (doto) helps with initializing 'bean-y' objects:
 
     (doto (JLabel.)
-      (.setText \"HI\")
+      (.setText      \"HI\")
       (.setForeground Color/ORANGE)
-      (.setIcon (ImageIcon. \"hi.png\")))"
+      (.setIcon       (ImageIcon. \"hi.png\")))"
              
 ;---------------------------------------------------------------------------------
 
@@ -421,6 +431,8 @@ seqs-slide
 * Testing
 
 * Build tools and dev environment
+
+* DSLs
 
 * Libraries"
 
@@ -471,16 +483,22 @@ Fine, gosh!"
 ;---------------------------------------------------------------------------------
 
 "That's it.
-----------"
+----------
+
+https://github.com/daveray/here-comes-clojure"
 ])
+
+;---------------------------------------------------------------------------------
+;---------------------------------------------------------------------------------
+;---------------------------------------------------------------------------------
 
 (def current (atom slides))
 
 (def height 21)
 (def width 70)
+(def content-prefix "|  ")
 
 (def separator (cs/join (take width (repeat \-))))
-
 
 (defn get-padding-size [content]
   (let [line-count (count (cs/split content #"\n" -1))
@@ -497,20 +515,19 @@ Fine, gosh!"
   (prepare-content (cs/join (take n (repeat "\n"))) prefix))
 
 (defn print-current! []
-  (let [content (first @current)
+  (let [content     (first @current)
        [top bottom] (get-padding-size content)]
-    (println "\n\n\n\n\n")
     (println separator)
-    (println (prepare-padding top     "|  "))
-    (println (prepare-content content "|  "))
-    (println (prepare-padding bottom  "|  "))
+    (println (prepare-padding top     content-prefix))
+    (println (prepare-content content content-prefix))
+    (println (prepare-padding bottom  content-prefix))
     (println separator)))
 
 (defn advance! [] 
   (do
     (when-not @current
       (reset! current slides))
-    (println "`\n")
+    (println "`\n\n\n\n\n\n\n\n")
     (print-current!)
     (swap! current next)
     (list "Here Come's Clojure", :CrafstmanGuild, "@darevay", 

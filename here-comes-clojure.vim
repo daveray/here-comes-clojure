@@ -1,5 +1,9 @@
 " Nasty vim helpers for running the presentation in vimclojure repl
 
+
+" Move to bottom of repl and start typing
+map <leader>` <esc>G$a
+
 " Reload code
 map <leader>1 <esc>G$a(use 'here-comes-clojure.core :reload)<cr><esc>
 " Begin/Reset presentation
