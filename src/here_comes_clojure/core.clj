@@ -27,7 +27,7 @@
 ~~~~~~~  ~~~~~ ~~~  000000  0000000 
 ~~~~~~~~  ~~~ ~~~~~  0000.  000000  
  ~~~~~~~~  ~  ~~~~~   00   00000    
-  ~~~~~~~~.   ~~~~~~.               Here Come's Clojure
+  ~~~~~~~~.   ~~~~~~.               Here Comes Clojure
    ~~~~~~~~~          ''       ~    -------------------
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~     
       ~~~~~~~~~~~~~~~~~~~~~~~.      CraftsmanGuild, April 5, 2011
@@ -530,7 +530,7 @@ https://github.com/daveray/here-comes-clojure"
     (println "`\n\n\n\n\n\n\n\n")
     (print-current!)
     (swap! current next)
-    (list "Here Come's Clojure", :CrafstmanGuild, "@darevay", 
+    (list "Here Comes Clojure", :CrafstmanGuild, "@darevay", 
      (- (count slides) (count @current)))))
 
 (defn begin! []
